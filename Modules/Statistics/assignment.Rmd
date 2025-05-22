@@ -1,0 +1,567 @@
+```{r}
+
+
+#installing required packages
+install.packages("matlib")
+install.packages("rsample")
+
+#checking whether package is installed
+is_matlib_installed <-"matlib" %in% rownames(installed.packages())
+is_rsample_installed <- "rsample" %in% rownames(installed.packages())
+
+print(paste("matlib installed:", is_matlib_installed))
+print(paste("rsample installed:", is_rsample_installed))
+```
+
+```{r}
+#importing required library
+library(matlib)
+library(rsample)
+```
+
+```{r}
+#loading data from csv file and converting it to matrix
+df <- read.csv("/home/aishwarya/Downloads/kolz/dataset.csv", header = T)
+colnames(df)<-c("x1", "x3", "x4", "x5","x2")
+
+#input data set
+X <- df[, c("x1", "x3", "x4", "x5")]
+X <- as.matrix(X)
+length(X)
+
+#output data set
+Y <- df[,c("x2")]
+Y <- as.matrix(Y)
+colnames(Y)<-c("y")
+length(Y)
+```
+
+
+```{r}
+#setting time series data 
+time <- as.matrix(1:length(Y))
+```
+
+```{r}
+#Task 1: Preliminary data analysis:
+#Task 1.1:Time series plots (of input and output Variable) 
+
+#plotting time series data
+X.ts<-ts(X,start = min(time), end = max(time), frequency =1)
+Y.ts<-ts(Y,start = min(time), end = max(time), frequency =1)
+```
+
+```{r}
+#plotting timeseries data of input and output variable
+plot(X.ts,main = "Time series plot of Input Variables", xlab = "Time", ylab = "Input Variables")
+plot(Y.ts,main = "Time series plot of Output Variable", xlab = "Time", ylab = "Output Variable")
+```
+
+```{r}
+#Task 1.2 : Plotting distribution of each variable
+#Creating a density of all input variables X 
+density_of_X=density(X)
+plot(density_of_X,main = "Density plot of input variables(X)")
+```
+
+```{r}
+# Creating a Histogram of input variables X
+hist(X,freq = FALSE,main = "Histogram of Density of input variables(X) ")
+```
+
+```{r}
+#combining Histogram of input variables X with density plot
+hist(X,freq = FALSE,main = "Histogram and Density plot of combined input variables(X)")
+lines(density_of_X,lwd=2,col="brown")
+rug(jitter(X))
+```
+
+```{r}
+#histogram and density plot of individual input variables and output variable
+par(mfrow=c(1,1))
+
+#Creating a density plot of input variable X1
+density_of_X1=density(X[,"x1"])
+hist(X[,"x1"],freq = FALSE,main = "Histogram and Density plot of x1",xlab = "Input variable x1")
+lines(density_of_X1,lwd=2,col="brown")
+# Add the data-points with noise in the X-axis
+rug(jitter(X[,"x1"]))
+
+#Creating a density plot of input variable X3
+density_of_X3=density(X[,"x3"])
+hist(X[,"x3"],freq = FALSE,main = "Histogram and Density plot of x3",xlab = "Input variable x3")
+lines(density_of_X3,lwd=2,col="brown")
+# Add the data-points with noise in the X-axis
+rug(jitter(X[,"x3"]))
+
+
+#Creating a density plot of input variable X4
+density_of_X4=density(X[,"x4"])
+hist(X[,"x4"],freq = FALSE,main = "Histogram and Density plot of x4",xlab = "Input variable x4")
+lines(density_of_X4,lwd=2,col="brown")
+# Add the data-points with noise in the X-axis
+rug(jitter(X[,"x4"]))
+
+
+#Creating a density plot of input variable X5
+density_of_X5=density(X[,"x5"])
+hist(X[,"x5"],freq = FALSE,main = "Histogram and Density plot of x5",xlab = "Input variable x5")
+lines(density_of_X5,lwd=2,col="brown")
+# Add the data-points with noise in the X-axis
+rug(jitter(X[,"x5"]))
+
+
+#Creating a density plot of output variable Y
+density_of_Y=density(Y)
+hist(Y,freq = FALSE,main = "Histogram and Density plot of Output variable(Y)", xlab = "Y")
+lines(density_of_Y,lwd=2,col="brown")
+# Add the data-points with noise in the X-axis
+rug(jitter(Y))
+```
+
+```{r}
+# Task 1.3 creating scatter plots to identify correlation between input and output Variable
+# arranging plot in a single screen
+par(mfrow=c(2,2))
+
+# Create scatter plots between each input Variable with output Variable
+# Plotting input Variable X1 against output Variable Y
+plot(X[,"x1"],Y,main = "Correlation betweeen X1 and Y", xlab = "Input Variable x1", ylab = "Output Variable y")
+
+# Plotting input Variable X3 against output Variable Y
+plot(X[,"x3"],Y,main = "Correlation betweeen X3 and Y", xlab = "Input Variable x3", ylab = "Output Variable y")
+
+# Plotting input Variable X4 against output Variable Y
+plot(X[,"x4"],Y,main = "Correlation betweeen X4 and Y", xlab = "Input Variable x4", ylab = "Output Variable y")
+
+# Plotting input Variable X5 against output Variable Y
+plot(X[,"x5"],Y,main = "Correlation betweeen X5 and Y", xlab = "Input Variable x5", ylab = "Output Variable y")
+
+```
+
+# Task 2
+
+```{r}
+# Task 2.1 Estimating the model parameters(theta) or thetahat using Least Square method
+
+# First we normalize the data points(X) prior to thetahat calculation for all the models, mainly due to the difference in scaling 
+
+
+#Binding data from equation of model 1.
+X_model1_predicators <- cbind(X[,"x4"],(X[,"x3"])^2)
+X_model1__scaled_predicators <- scale(X_model1_predicators)
+
+X_model1<-cbind(1,X_model1__scaled_predicators)
+#Calculating theta hat of Model 1
+Model1_thetahat=solve(t(X_model1) %*% X_model1) %*% t(X_model1) %*% Y
+
+
+#For model 2
+#Binding data from equation of model 2.
+X_model2_predicators <- cbind(X[,"x4"],(X[,"x3"])^2,X[,"x5"])
+X_model2_scaled_predicators <- scale(X_model2_predicators)
+
+X_model2<-cbind(1,X_model2_scaled_predicators)
+#Calculating thetahat of Model 2
+Model2_thetahat=solve(t(X_model2) %*% X_model2) %*% t(X_model2) %*% Y
+
+#Model 3
+#Binding data from equation of model 3.
+X_model3_predicators <- cbind(X[,"x3"],X[,"x4"], (X[,"x5"])^3)
+X_model3_scaled_predicators <- scale(X_model3_predicators)
+
+X_model3<-cbind(1,X_model3_scaled_predicators)
+#Calculating thetahat of Model 3
+Model3_thetahat=solve(t(X_model3) %*% X_model3) %*% t(X_model3) %*% Y
+
+#For model 4
+#Binding data from equation of model 4.
+X_model4_predicators <- cbind(X[,"x4"],(X[,"x3"])^2,(X[,"x5"])^3)
+X_model4_scaled_predicators <- scale(X_model4_predicators)
+
+X_model4<-cbind(1,X_model4_scaled_predicators)
+#Calculating thetahat of Model 4
+Model4_thetahat=solve(t(X_model4) %*% X_model4) %*% t(X_model4) %*% Y
+
+# for Model 5
+#Binding data from equation of model 5.
+X_model5_predicators <- cbind(X[,"x4"],(X[,"x1"])^2,(X[,"x3"])^2)
+X_model5_scaled_predicators <- scale(X_model5_predicators)
+
+X_model5<-cbind(1,X_model5_scaled_predicators)
+#Calculating thetahat of model 5
+Model5_thetahat=solve(t(X_model5) %*% X_model5) %*% t(X_model5) %*% Y
+
+
+# Optimized function to display coefficients for multiple models in a custom format
+display_model_results <- function(...){
+  # Capture all the model coefficient vectors passed as arguments
+  model_coefficients <- list(...)
+  
+  # Loop through each model's coefficients and display the results
+  for(i in seq_along(model_coefficients)) {
+    model <- model_coefficients[[i]]
+    
+    # Check if the model has at least 3 coefficients
+    if(length(model) >= 1) {
+      # Loop through each coefficient dynamically
+      result_str <- sprintf("Model %d Results:\n", i)
+      
+      # Extract all coefficients and add them to the result string
+      for(j in seq_along(model)) {
+        printMsg <- "theta%d-1: %.4f "
+        if(j == 1) {
+          result_str <- paste(result_str, sprintf("thetaBias: %.4f ", model[j]))
+        } else {
+          result_str <- paste(result_str, sprintf("theta%d: %.4f ", j-1, model[j]))
+        }
+      }
+      
+      # Print the results for the model
+      cat(result_str, "\n")
+    } else {
+      cat(sprintf("\nModel %d does not have enough coefficients!\n", i))
+    }
+  }
+}
+
+# Call the optimized function with the models' coefficients to display those data in proper format
+display_model_results(c(Model1_thetahat), c(Model2_thetahat), c(Model3_thetahat), c(Model4_thetahat),  c(Model5_thetahat))
+```
+
+```{r}
+# Task 2.2
+# Based on estimated model parameters. compute RSS for each model
+
+# For this we also need to compute Output(Y_hat) based on above thetahat parameters
+
+#Calculating Y-hat and RSS of Model 1
+Y_hat_model1 = X_model1 %*% Model1_thetahat
+#Calculating RSS
+RSS_Model_1=sum((Y-Y_hat_model1)^2)
+
+# Calculating Y-hat and RSS of model 2
+Y_hat_model2 = X_model2 %*% Model2_thetahat
+#Calculating RSS
+RSS_Model_2=sum((Y-Y_hat_model2)^2)
+
+# Calculating Y-hat and RSS of model 3
+Y_hat_model3 = X_model3 %*% Model3_thetahat
+#Calculating RSS
+RSS_Model_3=sum((Y-Y_hat_model3)^2)
+
+# Calculating Y-hat and RSS of model 4
+Y_hat_model4 = X_model4 %*% Model4_thetahat
+#Calculating RSS
+RSS_Model_4=sum((Y-Y_hat_model4)^2)
+
+# Calculating Y-hat and RSS of model 5
+Y_hat_model5 = X_model5 %*% Model5_thetahat
+#Calculating RSS
+RSS_Model_5=sum((Y-Y_hat_model5)^2)
+```
+
+```{r}
+#Task 2.3 Calculating log likelihood function and Variance of each model
+
+N=length(Y)
+
+#Calculating the Variance  and log-likelihood of Model 1
+Variance_Model_1=RSS_Model_1/(N-1)
+Likelihood_Model_1=
+  -(N/2)*(log(2*pi))-(N/2)*(log(Variance_Model_1))-(1/(2*Variance_Model_1))*RSS_Model_1
+
+#Calculating Variance and log-likelihood of Model 2
+Variance_Model_2=RSS_Model_2/(N-1)
+Likelihood_Model_2=
+  -(N/2)*(log(2*pi))-(N/2)*(log(Variance_Model_2))-(1/(2*Variance_Model_2))*RSS_Model_2
+
+#Calculating Variance and log-likelihood of Model 3
+Variance_Model_3=RSS_Model_3/(N-1)
+Likelihood_Model_3=
+  -(N/2)*(log(2*pi))-(N/2)*(log(Variance_Model_3))-(1/(2*Variance_Model_3))*RSS_Model_3
+
+#Calculating Variance and log-likelihood of Model 4
+Variance_Model_4=RSS_Model_4/(N-1)
+Likelihood_Model_4=
+  -(N/2)*(log(2*pi))-(N/2)*(log(Variance_Model_4))-(1/(2*Variance_Model_4))*RSS_Model_4
+
+#Calculating Variance and log-likelihood of Model 5
+Variance_Model_5=RSS_Model_5/(N-1)
+Likelihood_Model_5=
+  -(N/2)*(log(2*pi))-(N/2)*(log(Variance_Model_5))-(1/(2*Variance_Model_5))*RSS_Model_5
+```
+
+```{r}
+
+# Task 2.4 
+# Calculating AIC And BIC of each model
+# Calculating AIC and BIC of model 1
+K_Model_1<-length(Model1_thetahat)
+AIC_Model_1=2*K_Model_1-2*Likelihood_Model_1
+BIC_Model_1=K_Model_1*log(N)-2*Likelihood_Model_1
+
+##Calculating AIC and BIC of model 2
+K_Model_2<-length(Model2_thetahat)
+AIC_Model_2=2*K_Model_2-2*Likelihood_Model_2
+BIC_Model_2=K_Model_2*log(N)-2*Likelihood_Model_2
+
+##Calculating AIC and BIC of model 3
+K_Model_3<-length(Model3_thetahat)
+AIC_Model_3=2*K_Model_3-2*Likelihood_Model_3
+BIC_Model_3=K_Model_3*log(N)-2*Likelihood_Model_3
+
+##Calculating AIC and BIC of model 4
+K_Model_4<-length(Model4_thetahat)
+AIC_Model_4=2*K_Model_4-2*Likelihood_Model_4
+BIC_Model_4=K_Model_4*log(N)-2*Likelihood_Model_4
+
+##Calculating AIC and BIC of model 5
+K_Model_5<-length(Model5_thetahat)
+AIC_Model_5=2*K_Model_5-2*Likelihood_Model_5
+BIC_Model_5=K_Model_5*log(N)-2*Likelihood_Model_5
+```
+
+```{r}
+
+#function to generate df of various caclculations.
+generate_dfRSS <- function(type, model1, model2, model3, model4, model5) {
+  dfRSS <- data.frame(model1, model2, model3, model4, model5)
+  colnames(dfRSS) <- paste(type, 1:5, sep = "_")
+  return(dfRSS)
+}
+
+rss_df <- generate_dfRSS("RSS_Model", RSS_Model_1, RSS_Model_2, RSS_Model_3, RSS_Model_4, RSS_Model_5)
+variance_df <- generate_dfRSS("Variance_Model", Variance_Model_1, Variance_Model_2, Variance_Model_3, Variance_Model_4, Variance_Model_5)
+likelihood_df <- generate_dfRSS("Likelihood_Model", Likelihood_Model_1, Likelihood_Model_2, Likelihood_Model_3, Likelihood_Model_4, Likelihood_Model_5)
+k_df <- generate_dfRSS("K_Model", K_Model_1, K_Model_2, K_Model_3, K_Model_4, K_Model_5)
+aic_df <- generate_dfRSS("AIC_Model", AIC_Model_1, AIC_Model_2, AIC_Model_3, AIC_Model_4, AIC_Model_5)
+bic_df <- generate_dfRSS("BIC_Model", BIC_Model_1, BIC_Model_2, BIC_Model_3, BIC_Model_4, BIC_Model_5)
+
+rss_df
+variance_df
+likelihood_df
+k_df
+aic_df
+bic_df
+```
+
+```{r}
+## Task 2.5 calculating error distribution of each model and plotting those errors, then evaluating whether it follows normal/gaussian distribution using QQ plot.
+
+par(mfrow=c(1,1))
+
+# Error of model1
+model1_error <- Y-Y_hat_model1
+
+## Plotting the graph QQplot and QQ line of model 1
+qqnorm(model1_error, col = "darkblue",main = "QQ plot of model 1")
+qqline(model1_error, col = "brown",lwd=1)
+
+
+## Error of model2
+model2_error <- Y-Y_hat_model2
+## Plotting QQplot and QQ line of model 2
+qqnorm(model2_error, col = "darkblue",main = "QQ plot of model 2")
+qqline(model2_error, col = "brown")
+
+
+## Error of model3
+model3_error <- Y- Y_hat_model3
+## Plotting QQplot and QQ line of model 3
+qqnorm(model3_error, col = "darkblue",main = "QQ plot of model 3")
+qqline(model3_error, col = "brown")
+
+## Error of model4
+model4_error <- Y-Y_hat_model4
+## Plotting QQplot and QQ line of model 4
+qqnorm(model4_error, col = "darkblue",main = "QQ plot of model 4")
+qqline(model4_error, col = "brown")
+
+## Error of model5
+model5_error <- Y- Y_hat_model5
+# Plotting QQplot and QQ line of model 5
+qqnorm(model5_error, col = "darkblue",main = "QQ plot of model 5")
+qqline(model5_error, col = "brown")
+```
+
+
+```{r}
+select_best_model <- function() {
+  
+  models_thetahat <- list(Model1_thetahat, Model2_thetahat, Model3_thetahat,Model4_thetahat, Model5_thetahat)
+  
+  aic_values <- list(AIC_Model_1, AIC_Model_2, AIC_Model_3,AIC_Model_4, AIC_Model_5)
+  min_aic_index <- which.min(aic_values)
+  
+  bic_values <- list(BIC_Model_1, BIC_Model_2, BIC_Model_3,BIC_Model_4, BIC_Model_5)
+  min_bic_index <- which.min(aic_values)
+   
+  if(min_aic_index == min_bic_index) {
+    selected_model_thetahat <- models_thetahat[[min_aic_index]]
+    print(paste("Best Model:", min_aic_index)) 
+    return (selected_model_thetahat)
+  }
+  
+}
+
+selected_model_thetahat <- select_best_model()
+print(paste("selected_model_thetahat:")) 
+print(selected_model_thetahat)
+```
+
+
+```{r}
+# Task 2.7 splitting data into training and testing dataset and calculating estimation based on training dataset, compute output on the testing data set, compute 95% confidence intervals, also plotting normal distribution graph of training data
+# train_dataset=as.matrix(read.csv(file="/home/aishwarya/Downloads/kolz/dataset.csv",header = FALSE, skip = 1))
+
+## Splitting the dataset into Training and testing data set.
+df <- data.frame(x1 = X[,"x1"], x3 = X[,"x3"], x4 = X[,"x4"], x5 = X[,"x5"], y = Y)
+split <- initial_split(df, prop = .7)  
+train_data <- training(split)
+test_data <- testing(split)
+
+## Converting Y testing dataset into matrix
+Y_testing_data<-as.matrix(test_data$y)
+
+### Estimating model parameters using Training set, ##selected model 5 and using equation of model 5
+X_training_model_predicators <- cbind(train_data$x4, train_data$x1^2, train_data$x3^2)
+X_training_model_scaled_predicators <- scale(X_training_model_predicators)
+X_trained_model<-cbind(1,X_training_model_scaled_predicators)
+#Calculating thetahat of Model 5
+traning_thetahat=solve(t(X_trained_model) %*% X_trained_model) %*% t(X_trained_model) %*%  train_data$y
+
+# Save scaling parameters to use in testing data scaling
+train_mean <- attr(X_training_model_scaled_predicators, "scaled:center")
+train_sd  <- attr(X_training_model_scaled_predicators, "scaled:scale")
+
+# scaling testing data 
+X_testing_model_predicators <- cbind(test_data$x4, test_data$x1^2, test_data$x3^2)
+X_testing_model_scaled_predicators <- scale(X_testing_model_predicators, center = train_mean, scale = train_sd)
+X_testing_model<-cbind(1,X_testing_model_scaled_predicators)
+
+### Model out/Prediction
+Y_testing_pred = X_testing_model %*% traning_thetahat
+
+##
+n <- nrow(X_trained_model) # number of testing
+pn <- ncol(X_trained_model) # length of parameter
+z = 1.96
+y <- 1:length(Y_testing_pred)
+RSS_testing_pred=sum((Y_testing_data-Y_testing_pred)^2)
+RSS_testing_pred
+
+# Cov(β^)=σ2(XTX)^-1
+# σ2 is the residual variance, estimated as:
+trained_model_variance <- RSS_testing_pred / (n - pn)
+
+trained_model_covariance_theta <- trained_model_variance * solve(t(X_trained_model) %*% X_trained_model) 
+# Variance of the prediction
+
+testing_pred_variance <- rowSums((X_testing_model %*% trained_model_covariance_theta) * X_testing_model)
+testing_pred_se <- sqrt(trained_model_variance + testing_pred_variance)
+testing_pred_me <- z * testing_pred_se
+CI_lower <- Y_testing_pred - testing_pred_me
+CI_upper <- Y_testing_pred + testing_pred_me
+
+
+# Plot predictions
+plot(Y_testing_pred, y,
+     col = rgb(0, 0, 1, 0.6),  # Semi-transparent blue for predictions
+     pch = 19,
+     xlim = range(c(CI_lower, CI_upper, Y_testing_data)),
+     ylab = "Test Sample Index",
+     xlab = "Y_testing_hat (Prediction)",
+     main = "Predictions with 95% Confidence Intervals")
+
+# Add horizontal confidence interval lines
+segments(y0 = y, x0 = CI_lower, y1 = y, x1 = CI_upper,
+         col = rgb(1, 0, 0, 0.1),  # Red with more visibility
+         lwd = 1.5, lty = 2)
+
+# Add actual test data points
+points(Y_testing_data, y,
+       col = rgb(0, 0, 0, 0.6),  # Semi-transparent black
+       pch = 4)
+
+# Add legend
+legend("topleft",
+       legend = c("Predicted", "95% CI", "Actual"),
+       col = c(rgb(0, 0, 1, 0.6), rgb(1, 0, 0, 1), rgb(0, 0, 0, 0.6)),
+       pch = c(19, NA, 4),
+       lty = c(NA, 2, NA),
+       pt.cex = 1.2,
+       bty = "o")
+
+
+```
+
+#Task 3
+
+```{r}
+## Model 5 will be used, 2 parameter are selected and 2 kept constant.
+arr_1=0
+arr_2=0
+f_value=0 
+s_value=0
+
+
+#values from thetahat
+thetebias <- selected_model_thetahat[1]  #  selected parameter
+thetaone <-selected_model_thetahat[2] # constant value
+thetatwo <- selected_model_thetahat[3] # selected parameter
+thetathree <- selected_model_thetahat[4] # constant value
+
+
+Epsilon <- RSS_Model_5 * 4 ## fixing value of epsilon
+num <- 10000 #number of iteration
+##Calculating Y-hat for performing rejection ABC
+counter <- 0
+for (i in 1:num) {
+  range1 <- runif(1,-454.365009 , 454.365009) # calculating the range
+  range1
+  range2 <- runif(1,-10.605331,10.605331)
+  New_thetahat <- matrix(c(range1,thetaone,range2,thetathree))
+  New_Y_Hat <-  X_model5 %*% New_thetahat ## calculating new Y-hat
+  new_RSS <- sum((Y-New_Y_Hat)^2)
+  if (new_RSS <= Epsilon){
+    arr_1[i] <- range1
+    arr_2[i] <- range2
+    counter = counter+1
+    f_value <- matrix(arr_1)
+    s_value <- matrix(arr_2)
+  }
+}
+
+
+par(mfrow=c(1, 1))
+###Marginal Histogram for f_value
+hist(f_value, 
+     col = rgb(1, 0, 0, 1), 
+     main = "Marginal Posterior Distribution of First Selected Theta", 
+     xlab = "first selected theta(f_values)", 
+     ylab = "Frequency", 
+     border = "white")
+
+###Marginal Histogram for s_value
+hist(s_value, 
+     col = rgb(0, 1, 0, 1), 
+     main = "Marginal Posterior Distribution of Second Selected Theta", 
+     xlab = "second selected theta(s_values)", 
+     ylab = "Frequency", 
+     border = "white")
+
+###plotting Joint  Posterior Distribution of the graph
+plot(f_value, s_value, 
+     col = c(rgb(1, 0, 0, 1),  rgb(0, 1, 0, 1)),  # semi-transparent blue
+     pch = 16, 
+     main = "Joint Posterior Distribution of first and second selected theta", 
+     xlab = "first selected theta(f_values)", 
+     ylab = "second selected theta(s_values)")
+
+
+legend("topleft", legend = c("f_values", "s_values"),
+       col =c(rgb(1, 0, 0, 1),  rgb(0, 1, 0, 1)),
+       pch = 16, bty = "o")
+
+```
