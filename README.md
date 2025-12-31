@@ -1,17 +1,45 @@
-# Module 1: Introduction to Statistical Methods for Data Science
+# MSc Data Science - Coursework Repository
 
-## 📘 Module Overview
+## Overview
 
-This repository contains Task Requirement document, R code, knitted html document, dataset for the task/assignment of the module **Introduction to Statistical Methods for Data Science**.
+This repository serves as a comprehensive portfolio of the coursework, assignments, and projects completed during the **MSc in Data Science** program at **Coventry University**. It is organized by modules, each containing relevant code, documentation, reports, and datasets.
 
 
-- **Student Name**: Aishwarya Rai  
-- **Module**: Introduction to Statistical Methods for Data Science  
-- **University**: Coventry University  
+## Repository Structure
 
-## 📁 Contents
+The repository is organized into the following modules:
 
-- `Modules/Introduction to Statistical Methods for Data Science/STW 7089CEM Introduction To Statistical Methods For Data Science.docx` – Task Requirement
-- `Modules/Introduction to Statistical Methods for Data Science/.Dataset_store` – Dataset with input and output data
-- `Modules/Introduction to Statistical Methods for Data Science/assignment.Rmd` – Solved Task code written in R
-- `Modules/Introduction to Statistical Methods for Data Science/assignment.html` – Knitted html document of solved task written in R code
+### 1. Introduction to Statistical Methods for Data Science
+*Located in: `Modules/Introduction to Statistical Methods for Data Science`*
+
+This module focuses on statistical analysis using R.
+- **Task Requirement**: `STW 7089CEM Introduction To Statistical Methods For Data Science.docx`
+- **Code**: `assignment.Rmd` (R Markdown)
+- **Output**: `assignment.html` (Knitted HTML)
+- **Data**: `.Dataset_store`
+
+### 2. Data Management Systems
+*Located in: `Modules/Data Management Systems`*
+
+Contains the coursework submission for Data Management Systems.
+- **Report**: `AishwaryaRai_DMS.pdf`
+
+### 3. Information Retrieval
+*Located in: `Modules/Information Retrieval`*
+
+Implementation of an Information Retrieval system, including classification tasks.
+- **Report**: `AishwaryaRai_IR.pdf`
+- **Source Code**: Python implementation (`main.py`, `src/`)
+- **Documentation**: `classification_system_report.txt`
+
+### 4. Machine Learning
+*Located in: `Modules/Machine Learning`*
+
+Machine Learning projects and research papers.
+- **Paper**: `Machine_Learning_Paper.pdf` (and LaTeX source `paper.tex`)
+- **Source Code**: Python project (`main.py`, `src/`)
+- **Configuration**: `pyproject.toml`
+- **Outputs**: Generated results in `outputs/`
+
+---
+*This repository is maintained by Aishwarya Rai.*
