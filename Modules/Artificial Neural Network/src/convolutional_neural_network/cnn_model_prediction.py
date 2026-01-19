@@ -15,7 +15,10 @@ from data_pipeline import load_dataset, normalize
 DATASET_PATH = os_path.join(os_path.dirname(os_path.dirname(os_path.abspath(__file__))), "data/prediction_use_dataset")
 
 SRC_DIR = os_path.dirname(os_path.abspath(__file__))
-MODEL_PATH = os_path.join(SRC_DIR, "../model/cnn_classifier_model.keras")
+sys.path.append(os_path.dirname(SRC_DIR))  # Add parent directory to import data_pipeline
+
+MODEL_DIR = os_path.abspath(os_path.join(SRC_DIR, "..", "model"))
+MODEL_PATH = os_path.join(MODEL_DIR, "cnn_classifier_model.keras")
 
 # 1. Load Model
 print("Loading model...")
