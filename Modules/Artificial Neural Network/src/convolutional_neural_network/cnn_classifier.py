@@ -66,7 +66,7 @@ outputs = layers.Dense(1, activation="sigmoid")(x)
 cnn = models.Model(inputs, outputs)
 
 cnn.compile(
-    optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4),
+    optimizer=tf.keras.optimizers.Adam(learning_rate=1e-3),
     loss="binary_crossentropy",
     metrics=[
         "accuracy",
@@ -89,7 +89,7 @@ print("Starting training...")
 history = cnn.fit(
     X_train, y_train,
     validation_data=(X_test, y_test),
-    epochs=20,
+    epochs=100,
     batch_size=32,
     callbacks=[early_stop]
 )
