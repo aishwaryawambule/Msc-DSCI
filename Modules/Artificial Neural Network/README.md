@@ -21,7 +21,8 @@ The project consists of two main stages:
 │   │   └── con_aen_decoder.py  # Decoder architecture definition
 │   ├── convolutional_neural_network/
 │   │   ├── cnn_classifier.py   # Script to train the Classifier
-│   │   ├── cnn_model_prediction.py # Script for running predictions
+│   │   ├── cnn_model_inference.py # Script for running predictions
+│   │   ├── cnn_model_evaluation.py # Script for model evaluation
 │   │   └── aen_reconstruction.py # Helper to load data for classifier
 │   ├── data_pipeline.py        # Data loading and preprocessing logic
 │   ├── data/              
