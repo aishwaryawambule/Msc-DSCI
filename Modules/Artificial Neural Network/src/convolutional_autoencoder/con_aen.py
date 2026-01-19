@@ -40,7 +40,7 @@ autoencoder_model.compile(
 autoencoder_model.summary()
 
 # ---------- TRAINING ----------
-EPOCHS = 100
+EPOCHS = 15
 
 print("Starting Autoencoder training...")
 autoencoder_model.fit(
