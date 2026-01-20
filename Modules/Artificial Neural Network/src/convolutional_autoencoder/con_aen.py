@@ -16,7 +16,7 @@ from con_aen_decoder import decoder
 # which seems to rely on the script being run in a way that data_pipeline is importable.
 from data_pipeline import get_all_datasets
 
-train_ds, test_ds, train_ds_aen, test_ds_aen = get_all_datasets(verbose=False)
+train_ds, test_ds, train_ds_aen, test_ds_aen = get_all_datasets(False)
 
 # ---------- MODEL ASSEMBLY ----------
 # Input layer for the autoencoder

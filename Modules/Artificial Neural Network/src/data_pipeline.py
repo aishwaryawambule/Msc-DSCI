@@ -91,12 +91,12 @@ def get_all_datasets(verbose=False):
     """
     if verbose:
         print("Loading Train Dataset...")
-    train_ds = load_binary_dataset(os.path.join(DATASET_PATH, "Train"), verbose=verbose)
+    train_ds = load_binary_dataset(os.path.join(DATASET_PATH, "Train"))
     train_ds = train_ds.map(normalize).prefetch(tf.data.AUTOTUNE)
 
     if verbose:
         print("\nLoading Test Dataset...")
-    test_ds = load_binary_dataset(os.path.join(DATASET_PATH, "Test"), verbose=verbose)
+    test_ds = load_binary_dataset(os.path.join(DATASET_PATH, "Test"))
     test_ds = test_ds.map(normalize).prefetch(tf.data.AUTOTUNE)
 
     # Autoencoder datasets (X, X)

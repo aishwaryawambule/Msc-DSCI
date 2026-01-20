@@ -10,7 +10,7 @@ sys.path.append(os_path.dirname(SRC_DIR))  # Add parent directory to import data
 
 from data_pipeline import get_all_datasets
 
-train_ds, test_ds = get_all_datasets(verbose=False)
+train_ds, test_ds, train_ds_aen, test_ds_aen = get_all_datasets(False)
 
 # ---------- DATA EXTRACTION ----------
 def get_data_and_labels(dataset):
