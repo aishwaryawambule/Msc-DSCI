@@ -41,5 +41,14 @@ Machine Learning projects and research papers.
 - **Configuration**: `pyproject.toml`
 - **Outputs**: Generated results in `outputs/`
 
+### 5. Artificial Neural Network
+*Located in: `Modules/Artificial Neural Network`*
+
+This module focuses on fruit freshness classification using deep learning.
+- **Project**: IntelliSpoil - Fruit Freshness Classification.
+- **Architecture**: Convolutional Autoencoder (CAE) for feature extraction and Convolutional Neural Network (CNN) for classification.
+- **Source Code**: Python implementation for training, evaluation, and inference.
+- **Reports**: `Aishwarya_Rai.pdf` and `IntelliSpoil Research Presentation.pdf`.
+
 ---
 *This repository is maintained by Aishwarya Rai.*
